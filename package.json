@@ -1,0 +1,55 @@
+{
+  "name": "controlm-mcp",
+  "version": "1.1.0",
+  "description": "MCP-powered Control-M Operations Copilot for the BMC Control-M Automation API 9.22.x: agent provisioning, upgrades, diagnostics, job and folder monitoring, alert analysis, forecasting, deployment and environment reporting.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "main": "dist/server.js",
+  "bin": {
+    "controlm-mcp": "dist/server.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    ".env.example",
+    ".github/OpenAPI-YAML.yaml",
+    "examples/mcp-client-config.json"
+  ],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "control-m",
+    "bmc",
+    "automation-api",
+    "workload-automation",
+    "copilot"
+  ],
+  "scripts": {
+    "setup": "npm ci && npm run build",
+    "build": "tsc -p tsconfig.json",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "rebuild": "npm run clean && npm run build",
+    "start": "node dist/server.js",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test",
+    "gen:types": "node dist/scripts/generate-types.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "form-data": "^4.0.1",
+    "https-proxy-agent": "^7.0.6",
+    "js-yaml": "^4.1.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

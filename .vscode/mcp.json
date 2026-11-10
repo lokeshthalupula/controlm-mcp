@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "controlm-mcp": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${workspaceFolder}/dist/server.js"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

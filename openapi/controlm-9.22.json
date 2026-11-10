@@ -1,0 +1,413 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Control-M Automation API",
+    "version": "9.22.0",
+    "description": "Trimmed Control-M Automation API descriptor. Replace this file with the swagger.json served by your Control-M Web Server to expose the full operation set."
+  },
+  "servers": [{ "url": "/automation-api" }],
+  "paths": {
+    "/session/login": {
+      "post": {
+        "operationId": "login",
+        "tags": ["session"],
+        "summary": "Create an Automation API session token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LoginCredentials" } }
+          }
+        },
+        "responses": { "200": { "description": "Token issued" } }
+      }
+    },
+    "/session/logout": {
+      "post": {
+        "operationId": "logout",
+        "tags": ["session"],
+        "summary": "Invalidate the current session token",
+        "responses": { "200": { "description": "Logged out" } }
+      }
+    },
+    "/config/servers": {
+      "get": {
+        "operationId": "getServers",
+        "tags": ["config"],
+        "summary": "List Control-M/Servers",
+        "responses": { "200": { "description": "Server list" } }
+      }
+    },
+    "/config/server/{server}/agents": {
+      "get": {
+        "operationId": "getAgents",
+        "tags": ["config"],
+        "summary": "List agents of a Control-M/Server",
+        "parameters": [
+          { "name": "server", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Agent list" } }
+      }
+    },
+    "/config/server/{server}/agent": {
+      "post": {
+        "operationId": "addAgent",
+        "tags": ["config"],
+        "summary": "Register an agent with a Control-M/Server",
+        "parameters": [
+          { "name": "server", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/AgentDefinition" } }
+          }
+        },
+        "responses": { "200": { "description": "Agent registered" } }
+      }
+    },
+    "/config/server/{server}/agent/{agent}": {
+      "delete": {
+        "operationId": "deleteAgent",
+        "tags": ["config"],
+        "summary": "Delete an agent definition",
+        "parameters": [
+          { "name": "server", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "agent", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Agent deleted" } }
+      }
+    },
+    "/config/server/{server}/agent/{agent}/ping": {
+      "post": {
+        "operationId": "pingAgent",
+        "tags": ["config"],
+        "summary": "Ping an agent",
+        "parameters": [
+          { "name": "server", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "agent", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Ping result" } }
+      }
+    },
+    "/config/server/{server}/agent/{agent}/test": {
+      "post": {
+        "operationId": "testAgent",
+        "tags": ["config"],
+        "summary": "Test agent connectivity",
+        "parameters": [
+          { "name": "server", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "agent", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Test result" } }
+      }
+    },
+    "/provision/install/agent": {
+      "post": {
+        "operationId": "provisionInstallAgent",
+        "tags": ["provision"],
+        "summary": "Install a Control-M/Agent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ProvisionRequest" } }
+          }
+        },
+        "responses": { "200": { "description": "Operation accepted" } }
+      }
+    },
+    "/provision/upgrade/agent": {
+      "post": {
+        "operationId": "provisionUpgradeAgent",
+        "tags": ["provision"],
+        "summary": "Upgrade a Control-M/Agent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ProvisionRequest" } }
+          }
+        },
+        "responses": { "200": { "description": "Operation accepted" } }
+      }
+    },
+    "/provision/uninstall/agent": {
+      "post": {
+        "operationId": "provisionUninstallAgent",
+        "tags": ["provision"],
+        "summary": "Uninstall a Control-M/Agent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ProvisionRequest" } }
+          }
+        },
+        "responses": { "200": { "description": "Operation accepted" } }
+      }
+    },
+    "/provision/status/{operationId}": {
+      "get": {
+        "operationId": "provisionStatus",
+        "tags": ["provision"],
+        "summary": "Get provisioning operation status",
+        "parameters": [
+          { "name": "operationId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Operation status" } }
+      }
+    },
+    "/provision/images": {
+      "get": {
+        "operationId": "provisionListImages",
+        "tags": ["provision"],
+        "summary": "List provisioning repository images",
+        "parameters": [{ "name": "os", "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image list" } }
+      }
+    },
+    "/run": {
+      "post": {
+        "operationId": "runJob",
+        "tags": ["run"],
+        "summary": "Run a job or folder",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/RunRequest" } }
+          }
+        },
+        "responses": { "200": { "description": "Run submitted" } }
+      }
+    },
+    "/run/order": {
+      "post": {
+        "operationId": "orderFolder",
+        "tags": ["run"],
+        "summary": "Order a folder into the active jobs database",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/OrderRequest" } }
+          }
+        },
+        "responses": { "200": { "description": "Folder ordered" } }
+      }
+    },
+    "/run/status/{runId}": {
+      "get": {
+        "operationId": "getRunStatus",
+        "tags": ["run"],
+        "summary": "Get the status of a run",
+        "parameters": [
+          { "name": "runId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Run status" } }
+      }
+    },
+    "/run/job/{jobId}/status": {
+      "get": {
+        "operationId": "getJobStatus",
+        "tags": ["run"],
+        "summary": "Get the status of a single job",
+        "parameters": [
+          { "name": "jobId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Job status" } }
+      }
+    },
+    "/run/job/{jobId}/rerun": {
+      "post": {
+        "operationId": "rerunJob",
+        "tags": ["run"],
+        "summary": "Rerun a job",
+        "parameters": [
+          { "name": "jobId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Job rerun" } }
+      }
+    },
+    "/run/job/{jobId}/hold": {
+      "post": {
+        "operationId": "holdJob",
+        "tags": ["run"],
+        "summary": "Hold a job",
+        "parameters": [
+          { "name": "jobId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Job held" } }
+      }
+    },
+    "/run/job/{jobId}/free": {
+      "post": {
+        "operationId": "freeJob",
+        "tags": ["run"],
+        "summary": "Free a held job",
+        "parameters": [
+          { "name": "jobId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Job freed" } }
+      }
+    },
+    "/run/job/{jobId}/kill": {
+      "post": {
+        "operationId": "killJob",
+        "tags": ["run"],
+        "summary": "Kill a running job",
+        "parameters": [
+          { "name": "jobId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Job killed" } }
+      }
+    },
+    "/build": {
+      "post": {
+        "operationId": "build",
+        "tags": ["deploy"],
+        "summary": "Validate job definition files",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": { "definitionsFile": { "type": "string", "format": "binary" } }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Build results" } }
+      }
+    },
+    "/deploy": {
+      "post": {
+        "operationId": "deploy",
+        "tags": ["deploy"],
+        "summary": "Deploy job definition files",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "definitionsFile": { "type": "string", "format": "binary" },
+                  "deployDescriptorFile": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Deploy results" } }
+      }
+    },
+    "/forecast": {
+      "post": {
+        "operationId": "createForecast",
+        "tags": ["forecast"],
+        "summary": "Create a forecast",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ForecastRequest" } }
+          }
+        },
+        "responses": { "200": { "description": "Forecast created" } }
+      }
+    },
+    "/forecast/{forecastId}": {
+      "get": {
+        "operationId": "getForecastById",
+        "tags": ["forecast"],
+        "summary": "Get a forecast by id",
+        "parameters": [
+          { "name": "forecastId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Forecast" } }
+      }
+    },
+    "/config/authorization/roles": {
+      "get": {
+        "operationId": "getRoles",
+        "tags": ["security"],
+        "summary": "List authorization roles",
+        "responses": { "200": { "description": "Role list" } }
+      }
+    },
+    "/config/authentication/users": {
+      "get": {
+        "operationId": "getUsers",
+        "tags": ["security"],
+        "summary": "List authentication users",
+        "responses": { "200": { "description": "User list" } }
+      }
+    },
+    "/config/secrets": {
+      "get": {
+        "operationId": "getSecrets",
+        "tags": ["security"],
+        "summary": "List secret names",
+        "responses": { "200": { "description": "Secret list" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginCredentials": {
+        "type": "object",
+        "required": ["username", "password"],
+        "properties": {
+          "username": { "type": "string", "description": "Control-M user name." },
+          "password": { "type": "string", "description": "Control-M password." }
+        }
+      },
+      "AgentDefinition": {
+        "type": "object",
+        "required": ["host"],
+        "properties": {
+          "host": { "type": "string", "description": "Agent host name." },
+          "port": { "type": "integer", "description": "Agent-to-server port." }
+        }
+      },
+      "ProvisionRequest": {
+        "type": "object",
+        "required": ["server", "host"],
+        "properties": {
+          "server": { "type": "string", "description": "Control-M/Server name." },
+          "host": { "type": "string", "description": "Target host." },
+          "version": { "type": "string", "description": "Agent version." },
+          "installationPath": { "type": "string" },
+          "user": { "type": "string" },
+          "port": { "type": "integer" }
+        }
+      },
+      "RunRequest": {
+        "type": "object",
+        "properties": {
+          "ctm": { "type": "string" },
+          "folder": { "type": "string" },
+          "jobName": { "type": "string" },
+          "variables": { "type": "array", "items": { "type": "object" } }
+        }
+      },
+      "OrderRequest": {
+        "type": "object",
+        "required": ["ctm", "folder"],
+        "properties": {
+          "ctm": { "type": "string" },
+          "folder": { "type": "string" },
+          "jobName": { "type": "string" },
+          "orderDate": { "type": "string", "description": "YYYYMMDD" },
+          "hold": { "type": "boolean" },
+          "independentFlow": { "type": "boolean" }
+        }
+      },
+      "ForecastRequest": {
+        "type": "object",
+        "properties": {
+          "ctm": { "type": "string" },
+          "folder": { "type": "string" },
+          "from": { "type": "string" },
+          "to": { "type": "string" }
+        }
+      }
+    }
+  }
+}
